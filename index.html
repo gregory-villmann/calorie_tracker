@@ -8,6 +8,7 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <title>Calorie Tracker</title>
 </head>
 <body>
@@ -36,18 +37,19 @@
                         <input type="text" placeholder="Add Calories" id="itemCalories">
                         <label for="itemCalories">Calories</label>
                     </div>
-                    <button class="add-btn btn green darken-3"><i class="fa fa-plus"></i>Add meal</button>
+                    <button class="add-btn btn green darken-3"><i class="fa fa-plus"></i> Add meal</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
+
 
 <!--  Calorie counter-->
 <h3 class="center-align">Total Calories: <span class="total-calories">0</span></h3>
 
-
-
+<!-- List of meal items-->
+<ul id="item-list" class="collection"></ul>
+</div>
 
 
 
