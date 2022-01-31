@@ -54,16 +54,24 @@ const StorageCtrl = (function (){
 
 const ItemCtrl = (function(){
     const Item = function(id, name, calories){
-      this.id = id;
+      this.id = iD.next().value;
       this.name = name;
       this.calories = calories;
     }
+
+    function* genID() {
+        let id = 1;
+        while (true) {
+            yield id++;
+        }
+    }
+    const iD = genID();
+
     const data = {
         items: [],
         total: 0,
         currentItem: null,
     }
-
     return{
         getItems: function (){
             return data.items
