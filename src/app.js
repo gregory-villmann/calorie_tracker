@@ -101,15 +101,16 @@ const ItemCtrl = (function(){
                 }
             }
         },
-        updateItem: function (name, calories){
-            let items = data.items;
-            let updatedItemId = JSON.parse(localStorage.getItem('currentItem')).id;
-            for(let i=0; i<items.length; i++){
-                if (items[i].id == updatedItemId){
-                    data.items[updatedItemId, name, calories];
+        updateItemByID: function (id, name, calories) {
+            let updatedItem = null;
+            data.items.forEach((item) => {
+                if (item.id === id) {
+                    item.name = name;
+                    item.calories = parseInt(calories);
+                    updatedItem = item;
                 }
-            }
-
+            });
+            return updatedItem;
         },
         itemToBeDeleted: function (id) {
             //Get ids;
@@ -195,6 +196,16 @@ const UICtrl = (function(){
         updateTotCalories: function (totalCal) {
             document.querySelector(UISelectors.totalCalories).innerHTML = totalCal;
         },
+        updateListItem: function (item) {
+            const listItems = document.querySelectorAll("#item-list li");
+            const listItemsConvert = Array.from(listItems);
+            listItemsConvert.forEach((li) => {
+                const liID = li.getAttribute("id");
+                if (liID === `item-${parseInt(item.id)}`) {
+                    li.innerHTML = `<strong>${item.name}:</strong> <em>${item.calories} Calories</em><a href="#" class="secondary-content"><i class="edit-item fas fa-edit"></i></a>`
+                }
+            });
+        },
 
     }
 })();
@@ -226,11 +237,9 @@ const App = (function(ItemCtrl, UICtrl, StorageCtrl){
     const editItemBtn = function (event){
         if(event.target.className === 'edit-item fas fa-edit'){
             let pressId = event.target.parentElement.parentElement.id.split('-')[1]; // logib item id
-            console.log(pressId);
             let newCurrentItem = ItemCtrl.findItemFromId(pressId);
             StorageCtrl.storeCurrentItem(newCurrentItem);
             UICtrl.clickEditMeal();
-            console.log(JSON.parse(localStorage.getItem('currentItem')));
             UICtrl.editItemToForm(JSON.parse(localStorage.getItem('currentItem')));
         }
     }
@@ -249,20 +258,20 @@ const App = (function(ItemCtrl, UICtrl, StorageCtrl){
     }
     const updateItem = function (event){
         const input = UICtrl.getItemInput();
-        console.log(input);
         let updatedName = document.querySelector('#itemName').value;
         let updatedCalories = document.querySelector('#itemCalories').value;
         let curr = JSON.parse(localStorage.getItem('currentItem'));
+        let currentItemId = curr.id;
         if(input.name == curr.name  && input.calories == curr.calories){
             window.alert("You already have the same values!");
         } else if(input.name !== ""  && input.calories !== ""){
-            ItemCtrl.updateItem(updatedName, updatedCalories);
-            /*const newItem = ItemCtrl.addItem(input.name, input.calories);
-            UICtrl.addListItem(newItem);
-            const totalCalories = ItemCtrl.getTotalCalories();
-            UICtrl.showTotalCalories(totalCalories);
-            StorageCtrl.storeItem(newItem);
-            UICtrl.cleaInput();*/
+            const updatedItemSubmit = ItemCtrl.updateItemByID(currentItemId, input.name, input.calories);
+            UICtrl.updateListItem(updatedItemSubmit);
+            const totalCal = ItemCtrl.getTotalCalories();
+            UICtrl.updateTotCalories(totalCal);
+            UICtrl.cancelEditMeal();
+            UICtrl.cleaInput();
+            StorageCtrl.updateItemStorage(updatedItemSubmit);
         }
         event.preventDefault();
     }
